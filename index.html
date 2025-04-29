@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Ratio Buddy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #2C5693;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: #fff;
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+      text-align: center;
+      width: 360px;
+      max-width: 90%;
+    }
+    h1 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 36px;
+      letter-spacing: 4px;
+      margin: 0;
+      color: #2C5693;
+    }
+    h2 {
+      font-size: 14px;
+      color: #888;
+      margin-top: 5px;
+      margin-bottom: 30px;
+      letter-spacing: 1px;
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      font-size: 14px;
+      color: #333;
+      text-align: left;
+    }
+    .input-group {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    select, input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #2C5693;
+      border-radius: 8px;
+      font-size: 16px;
+      background-color: #f9f9f9;
+      color: #333;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    select:focus, input:focus {
+      outline: none;
+      border-color: #FFD700;
+    }
+    input[readonly] {
+      background-color: #eee;
+    }
+    .clear-button {
+      background-color: transparent;
+      border: 2px solid #2C5693;
+      color: #2C5693;
+      padding: 6px 20px;
+      font-size: 0.9rem;
+      border-radius: 20px;
+      margin-top: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .clear-button:hover {
+      background-color: #2C5693;
+      color: white;
+    }
+    .credit {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.8rem;  /* 少し小さく設定 */
+      color: #2C5693;
+      letter-spacing: 2px;
+      margin-top: 30px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Ratio Buddy</h1>
+    <h2>比率計算ツール</h2>
+
+    <label>比率を選ぶ・入力する:</label>
+    <div class="input-group">
+      <select id="presetRatio" onchange="setPresetRatio()">
+        <option value="">-- 自由入力 --</option>
+        <option value="4/5">4:5</option>
+        <option value="5/4">5:4</option>
+        <option value="16/9">16:9</option>
+        <option value="1/1">1:1</option>
+        <option value="9/16">9:16</option>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <input type="text" id="customRatio" oninput="calculateFromInput()" placeholder="例: 3/2 など">
+    </div>
+
+    <label>縦(px):</label>
+    <div class="input-group">
+      <input type="number" id="height" oninput="calculateFromHeight()" placeholder="縦を入力">
+    </div>
+
+    <label>横(px):</label>
+    <div class="input-group">
+      <input type="number" id="width" oninput="calculateFromWidth()" placeholder="横を入力">
+    </div>
+
+    <button class="clear-button" onclick="clearInputs()">CLEAR</button>
+
+    <div class="credit">
+      Made by Buddy & Brother.
+    </div>
+  </div>
+
+  <script>
+    function getRatio() {
+      let custom = document.getElementById('customRatio').value;
+      if (custom.includes('/')) {
+        let parts = custom.split('/');
+        return parseFloat(parts[0]) / parseFloat(parts[1]);
+      } else if (!isNaN(custom) && custom !== '') {
+        return parseFloat(custom);
+      } else {
+        return null;
+      }
+    }
+
+    function setPresetRatio() {
+      let preset = document.getElementById('presetRatio').value;
+      document.getElementById('customRatio').value = preset;
+      clearInputs();
+    }
+
+    function calculateFromHeight() {
+      let height = parseFloat(document.getElementById('height').value);
+      let ratio = getRatio();
+      if (!isNaN(height) && ratio !== null) {
+        document.getElementById('width').value = Math.round(height * ratio);
+      } else {
+        document.getElementById('width').value = '';
+      }
+    }
+
+    function calculateFromWidth() {
+      let width = parseFloat(document.getElementById('width').value);
+      let ratio = getRatio();
+      if (!isNaN(width) && ratio !== null) {
+        document.getElementById('height').value = Math.round(width / ratio);
+      } else {
+        document.getElementById('height').value = '';
+      }
+    }
+
+    function calculateFromInput() {
+      if (document.getElementById('height').value !== '') {
+        calculateFromHeight();
+      } else if (document.getElementById('width').value !== '') {
+        calculateFromWidth();
+      }
+    }
+
+    function clearInputs() {
+      document.getElementById('height').value = '';
+      document.getElementById('width').value = '';
+    }
+  </script>
+</body>
+</html>
